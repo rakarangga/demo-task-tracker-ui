@@ -1,0 +1,9 @@
+# Demo lokal saja, tidak ada deploy. Sama dengan compose.dev.yaml tanpa bind mount.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      target: dev
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:5173"
