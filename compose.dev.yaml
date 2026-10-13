@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      target: dev
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:5173"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5173/"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  test:
+    profiles: ["test"]
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.test
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      BASE_URL: http://app:5173
